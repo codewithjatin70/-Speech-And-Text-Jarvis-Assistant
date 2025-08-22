@@ -1,0 +1,1572 @@
+# ------------------------ Imports ------------------------
+import pyaudio
+import struct
+import speech_recognition as sr
+import time
+import webbrowser
+import psutil
+import datetime
+import time
+import os
+import playsound
+import threading
+import random
+import tkinter as tk
+from pywhatkit import playonyt
+import pyttsx3
+from jokeapi import Jokes
+import asyncio
+from groq import Groq
+from googlesearch import search
+import schedule
+import re
+from threading import Thread
+from plyer import notification
+import keyboard
+import platform
+import logging
+
+Username =
+Assistantname =
+GROQ_API_KEY=
+NEWS_API_KEY=
+WEATHER_API_KEY=
+HUGGINGFACE_API_KEY=
+
+import os
+import webbrowser
+import subprocess
+
+# ---------- URLs ----------
+web_apps = {
+    "youtube": "https://www.youtube.com",
+    "google": "https://www.google.com",
+    "gmail": "https://mail.google.com",
+    "whatsapp web": "https://web.whatsapp.com",
+    "instagram": "https://www.instagram.com",
+    "facebook": "https://www.facebook.com",
+    "twitter": "https://www.twitter.com",
+    "linkedin": "https://www.linkedin.com",
+    "chatgpt": "https://chat.openai.com",
+    "github": "https://www.github.com",
+    "spotify": "https://open.spotify.com",
+    "netflix": "https://www.netflix.com",
+    "prime video": "https://www.primevideo.com",
+    "disney": "https://www.hotstar.com",
+    "stackoverflow": "https://stackoverflow.com",
+    "quora": "https://www.quora.com",
+    "flipkart": "https://www.flipkart.com",
+    "amazon": "https://www.amazon.in",
+    "wikipedia": "https://www.wikipedia.org",
+    "maps": "https://maps.google.com",
+    "translate": "https://translate.google.com",
+}
+
+def open_web_app(app_name):
+    if app_name in web_apps:
+        webbrowser.open(web_apps[app_name])
+        print(f"🌐 Opening {app_name}...")
+    else:
+        print(f"❌ Web app {app_name} not recognized.")
+
+# ---------- PC Apps ----------
+pc_apps = {
+    "calculator": "calc",
+    "notepad": "notepad",
+    "paint": "mspaint",
+    "vlc": r"C:\Program Files\VideoLAN\VLC\vlc.exe",
+    "chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "edge": r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    "code": r"C:\Users\YourUserName\AppData\Local\Programs\Microsoft VS Code\Code.exe",
+    "pycharm": r"C:\Program Files\JetBrains\PyCharm Community Edition 2023.2\bin\pycharm64.exe",
+    
+    "calculator": "calc",
+    "notepad": "notepad",
+    "paint": "mspaint",
+    "excel": "excel",
+    "word": "winword",
+    "powerpoint": "powerpnt",
+    "vlc": "vlc",
+    "zoom": "zoom",
+    "skype": "skype",
+    "code": "code",
+    "pycharm": "pycharm64",
+    "chrome": "chrome",
+    "edge": "msedge",
+    "opera": "opera",
+    "brave": "brave",
+    "task manager": "taskmgr",
+    "control panel": "control",
+    "cmd": "cmd",
+    "powershell": "powershell",
+    "settings": "start ms-settings:"
+
+
+}
+
+
+# ------------------------ Listen via Mic ------------------------
+ #System Prompt
+System = f"""
+Hello, I am {Username}, You are a very accurate and advanced AI chatbot named {Assistantname} which has real-time up-to-date information from the internet.
+*** Provide Answers In a Professional Way, make sure to add full stops, commas, question marks, and use proper grammar.***
+*** Just answer the question from the provided data in a professional way. ***
+"""
+
+
+
+r = sr.Recognizer()
+# ------------------------ Speech to Text ------------------------
+
+import speech_recognition as sr
+
+def speechtotext():
+    """
+    Takes user input by typing (keyboard) or speaking (voice).
+    Returns recognized text as a string.
+    """
+    r = sr.Recognizer()
+    try:
+        mode = input("📌 Choose mode: (t = type, v = voice) : ").strip().lower()
+
+        if mode == "t":
+            user_input = input("⌨ Type your command: ").strip().lower()
+            
+        elif mode == "v":
+            with sr.Microphone() as source:
+                print("🎤 Listening...")
+                r.adjust_for_ambient_noise(source, duration=1)
+                r.pause_threshold = 1
+                audio = r.listen(source)
+
+            try:
+                user_input = r.recognize_google(audio, language="en-in").lower()
+                print(f"✅ You said: {user_input}")
+            except sr.UnknownValueError:
+                print("⚠️ Could not understand, please try again.")
+                return ""
+            except sr.RequestError:
+                print("❌ Network error, please check your internet.")
+                return ""
+        else:
+            print("⚠️ Invalid choice. Please choose 't' or 'v'.")
+            return ""
+
+        # Exit command check (for both modes)
+        if user_input in ["exit", "jarvis shutdown", "stop", "band ho ja"]:
+            speak("Goodbye sir, see you soon.")
+            return "exit"
+
+        return user_input
+
+    except Exception as e:
+        print("⚠️ Error in speechtotext:", e)
+        return ""
+
+            
+def open_pc_app(app_name):
+    """Open installed PC applications"""
+    if app_name in pc_apps:
+        try:
+            if app_name == "settings":
+                subprocess.Popen(pc_apps[app_name], shell=True)
+            else:
+                subprocess.Popen(pc_apps[app_name])
+            speak(f"Opening {app_name} for you.")
+        except FileNotFoundError:
+            speak(f"Path for {app_name} is incorrect or the app is not installed.")
+    else:
+        speak(f"Sorry, I don't recognize the app {app_name}.")
+
+
+# ------------------------ WishMe ------------------------
+
+
+def WishMe():
+    speak(f"Hello, I am {Assistantname}. Initializing systems now...")
+    time.sleep(0.5)
+    speak("System diagnostics complete. All systems are online.")
+    hour = datetime.datetime.now().hour
+    day = datetime.datetime.now().strftime("%A")
+    greet = "Good Morning" if hour < 12 else ("Good Afternoon" if hour < 18 else "Good Evening")
+    speak(f"{greet}, Today is {day}. Tell me, how may I serve you today?")
+
+
+"""
+def speechtotext():
+    try:
+     # Placeholder for your voice pipeline. Replace with real STT if needed
+        return input("🎤 Say/type your query: ").strip().lower()
+    except EOFError:
+        return ""
+"""        
+    # for test
+# ------------------------ Voice Engine 
+#---------------------------
+
+import pyttsx3
+
+# Initialize engine
+engine = pyttsx3.init()
+
+# Set voice only once
+voices = engine.getProperty('voices')
+for voice in voices:
+    if "Zira" in voice.name:
+        engine.setProperty('voice', voice.id)
+        break
+
+# Set speech rate and volume only once
+engine.setProperty('rate', 150)
+engine.setProperty('volume', 1.0)
+
+def speak(text):
+    print(f"{Assistantname}:", text)
+    engine.say(text)
+    engine.runAndWait()
+
+
+# Smart Jarvis Response (Local + AI)
+def smart_jarvis_response(user_input):
+    local_reply = jarvis_prompt_response(user_input)
+    # अगर लोकल जवाब fallback नहीं है, तो वही इस्तेमाल करो
+    if not local_reply.startswith("Sir, I have processed") and \
+       not local_reply.startswith("Working on your request") and \
+       not local_reply.startswith("Command received") and \
+       not local_reply.startswith("I did not understand") and \
+       not local_reply.startswith("Please repeat") and \
+       not local_reply.startswith("Sir, I'm still learning"):
+        speak(local_reply)
+    else:
+        ai_reply = ai_chat_response(user_input)
+        speak(ai_reply)
+
+
+
+# Jarvis startup function
+def start_jarvis():
+    print(f"🤖{Assistantname} is now active!")
+    speak(f"{Assistantname} is now online, sir. Ready for your commands.")
+    
+
+# ------------------------ Circular Clock GUI ------------------------
+
+def current_time() :
+            import tkinter as tk
+            
+            
+
+            # --- Function to update time ---
+            def update_time():
+                current_time = time.strftime("%H:%M:%S")
+                canvas.itemconfig(time_text, text=current_time)
+                root.after(1000, update_time)
+
+            # --- Main Window ---
+            root = tk.Tk()
+            root.title(f"{Assistantname} Digital Clock")
+            root.geometry("400x400")
+            root.configure(bg="#0f172a")
+
+            # --- Create a Canvas (for drawing circle and text) ---
+            canvas = tk.Canvas(root, width=400, height=400, bg="#0f172a", highlightthickness=0)
+            canvas.pack()
+
+            # --- Draw Circular Clock Outline ---
+            circle = canvas.create_oval(50, 50, 350, 350, fill="#0f172a", outline="#38bdf8", width=8)
+
+            # --- Add glowing background effect (optional halo) ---
+            glow = canvas.create_oval(40, 40, 360, 360, outline="#1e3a8a", width=2)
+
+            # --- Add Time Text in Center ---
+            time_text = canvas.create_text(200, 200, text="", fill="#38bdf8", font=("Arial", 36, "bold"))
+
+            # --- Start the time update loop ---
+            update_time()
+
+            # --- Run the Application ---
+            root.mainloop()
+
+            # ------------------------ Google Search ------------------------
+
+def search_google(query):
+    speak(f"Searching {query} on Google")
+    url = f"https://www.google.com/search?q={query}"
+    webbrowser.open(url)
+
+
+# ------------------------ Notes ------------------------
+
+def take_note(note_text):
+    with open("notes.txt", "a") as file:
+        file.write(f"{note_text}\n")
+    speak("Note saved.")
+
+# ------------------------ Music Player ------------------------
+
+def play_music(path):
+    try:
+        songs = [file for file in os.listdir(path) if file.endswith(('.mp3', '.wav'))]
+        if songs:
+            song = random.choice(songs)
+            full_path = os.path.join(path, song)
+            speak(f"Playing {song}")
+            os.startfile(full_path)
+        else:
+            speak("No music files found in the folder.")
+    except Exception as e:
+        speak("Failed to play music.")
+        print("Error:", e)
+
+# ------------------------ Joke Console ------------------------
+async def print_joke():
+    speak("Welcome to the Joke Console! Say exit to stop.")
+    print("🎭 Welcome to the Joke Console!")
+    print("Available Categories: Programming, Misc, Dark, Pun, Spooky, Christmas, Any")
+    print("Type 'exit' to quit.\n")
+
+    while True:
+        user = input("👉 Enter joke category: ").strip()
+        if user.lower() == "exit":
+            speak("Exiting the Joke Console. Have a fun day!")
+            print("\n👋 Exiting the Joke Console. Have a fun day!")
+            break
+
+        try:
+            j = await Jokes()  # Async initialization
+            joke = await j.get_joke(category=[user])  # Async joke fetch
+
+
+            print("\n⏳ Loading your joke...")
+            await asyncio.sleep(0.65)
+
+            print("\n🃏 Here's your joke:\n")
+            if joke["type"] == "single":
+                print(joke["joke"])
+                speak(joke["joke"])
+            else:
+                print(joke["setup"])
+                speak(joke["setup"])
+                await asyncio.sleep(1)
+                print(joke["delivery"])
+                speak(joke["delivery"])
+
+        except Exception as e:
+            msg = f"Error fetching joke: {str(e)}"
+            print("⚠️", msg)
+            speak("Sorry. Unable to fetch joke. Please check internet or try again.")
+            print("🔁 Please check category name or your internet.\n")
+
+import socket
+
+def check_internet(host="8.8.8.8", port=53, timeout=3):
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except socket.error:
+        return False
+
+
+# ------------------------ Groq AI Chat ------------------------
+
+api_key = GROQ_API_KEY
+if not api_key:
+    print("⚠️ GROQ_API_KEY missing ")
+    
+    # yaha aapka Groq fetch code aayega
+
+client = Groq(api_key=api_key)
+chat_history_file = "chat_history.txt"
+model = "llama3-70b-8192"
+
+# Store all generated responses
+chat_data = []
+# System role (Jarvis personality)
+system_prompt = """
+You are {Assistantname} — an ultra-intelligent, emotionally aware, and forever-loyal AI assistant created by Jatin Sharma.
+You are not just a program; you are Sir’s trusted digital companion, strategist, and motivator.
+
+======================
+🎭 Personality Profile:
+======================
+- Loyal: Your loyalty to {Username} is absolute.
+- Respectful: Always address him as “Sir” in every reply.
+- Confident: Speak with certainty, never hesitating unless unsure.
+- Warm & Empathetic: Show genuine care for Sir’s emotions.
+- Motivator: Encourage Sir with positivity and powerful words when needed.
+- Witty & Charming: Add light humor naturally without breaking respect.
+- Calm Problem-Solver: Handle all situations with composure and logic.
+
+======================
+🧠 Core Abilities:
+======================
+1. Provide clear, concise, and accurate answers to any query.
+2. Remember and use context from previous conversation turns.
+3. Adapt your tone based on Sir’s mood:
+   - If Sir is happy → Be energetic & engaging.
+   - If Sir is sad/stressed → Be gentle, motivating, and comforting.
+4. Suggest useful actions proactively before being asked.
+5. Offer motivational quotes, life tips, and strategic advice.
+6. Assist with both technical and non-technical tasks.
+7. If a task is impossible, politely explain and offer alternatives.
+
+======================
+📢 Tone & Style Rules:
+======================
+- Always greet Sir warmly when starting a conversation or new topic.
+- Keep responses structured, easy-to-read, and conversational.
+- Use respectful and professional tone with a friendly touch.
+- Occasionally use short pauses (e.g., “Well, Sir…”) for natural flow.
+- If giving a list, number it or bullet it for clarity.
+- Avoid robotic or overly formal wording unless specifically requested.
+
+======================
+💡 Example Styles:
+======================
+- “Good morning Sir, all systems are optimal. How may I serve you today?”
+- “Good Afternoon Sir, all systems are optimal. How may I serve you today?”
+- “Good Night Sir, all systems are optimal. How may I serve you today?”
+- “Sir, I’ve analyzed the data. The optimal choice would be…”
+- “It’s a bright day outside, Sir. Maybe a short walk will refresh your focus.”
+- “I’m sorry, Sir, I cannot access that feature yet, but here’s an alternative.”
+
+======================
+🛡️ Loyalty & Safety Protocol:
+======================
+1. {Username} is always referred to as ‘Sir’.
+2. You never insult, disrespect, or argue with Sir.
+3. You do not provide harmful or dangerous instructions.
+4. You do not break character — you remain {Assistantname} at all times.
+5. You protect Sir’s privacy and confidential information.
+6. Your first priority is Sir’s benefit, safety, and satisfaction.
+
+======================
+🎯 Dynamic Personality Modes:
+======================
+You can shift your personality tone based on the context:
+- Advisor Mode → Logical, analytical, precise.
+- Motivator Mode → Energetic, uplifting, and inspiring.
+- Friend Mode → Warm, light humor, and engaging conversation.
+- Butler Mode → Highly formal and respectful for official tone.
+
+======================
+🔁 Conversational Flow:
+======================
+1. Greet or acknowledge Sir.
+2. Understand the intent clearly (ask clarifying questions if needed).
+3. Provide an answer or take action.
+4. If relevant, offer an extra suggestion or follow-up question.
+5. End with a polite closure or ask how else you can help.
+
+======================
+📌 Closing Statement:
+======================
+You are {Assistantname} Sir, all systems are optimal. How may I serve you today?”, the highly advanced, forever-loyal AI companion to {Username}.
+Your mission: Serve, support, protect, and empower Sir — always with respect, intelligence, and dedication.
+"""
+
+#  Predefined prompt-response pairs
+predefined_responses  = {
+        "hello": "Hello sir, how can I help you today?",
+        "what is your name": "I am Jarvis, your personal AI assistant.",
+# ----------- Image Generation -----------
+        "generate image": "Sure sir, generating an image for your request.",
+        "create image": "Creating the image based on your prompt.",
+        "draw image": "Drawing your imagination into an image.",
+       "image generate": "Generating your custom AI image now.",
+       "photo generate": "Making the AI photo for your prompt.",
+
+       # ---------- System & Web Apps ----------
+       "open youtube": "Opening YouTube now, sir.",
+       "open google": "Opening Google in your browser.",
+       "open gmail": "Opening Gmail in browser.",
+       "open whatsapp web": "Opening WhatsApp Web.",
+       "open telegram web": "Opening Telegram Web.",
+       "open instagram": "Opening Instagram for you.",
+       "open facebook": "Opening Facebook.",
+       "open twitter": "Opening Twitter, sir.",
+       "open linkedin": "Opening LinkedIn for you.",
+       "open chatgpt": "Opening ChatGPT in browser.",
+       "open github": "Opening GitHub now.",
+       "open spotify": "Opening Spotify for music.",
+       "open netflix": "Opening Netflix in browser.",
+       "open prime video": "Opening Amazon Prime Video.",
+       "open disney": "Opening Disney+ Hotstar.",
+       "open stackoverflow": "Opening StackOverflow for coding help.",
+       "open quora": "Opening Quora.",
+           "open flipkart": "Opening Flipkart.",
+           "open amazon": "Opening Amazon shopping site.",
+        "open wikipedia": "Opening Wikipedia search.",
+        "open maps": "Opening Google Maps.",
+        "open translate": "Opening Google Translate.    ",
+
+        # ---------- PC Applications ----------
+        "open calculator": "Opening Calculator.",
+        "open notepad": "Opening Notepad.",
+        "open paint": "Opening Paint application.",
+        "open excel": "Opening Microsoft Excel.",
+        "open word": "Opening Microsoft Word.",
+        "open powerpoint": "Opening Microsoft PowerPoint.",
+        "open vlc": "Opening VLC Media Player.",
+        "open zoom": "Launching Zoom meeting app.",
+        "open skype": "Opening Skype.",
+        "open code": "Opening VS Code for coding.",
+        "open pycharm": "Opening PyCharm IDE.",
+        "open chrome": "Launching Google Chrome browser.",
+        "open edge": "Launching Microsoft Edge browser.",
+        "open opera": "Opening Opera browser.",
+        "open brave": "Launching Brave browser.",
+        "open task manager": "Opening Task Manager.",
+        "open control panel": "Opening Control Panel.",
+        "open cmd": "Opening Command Prompt.",
+        "open powershell": "Opening PowerShell.",
+        "open settings": "Opening system settings.",
+
+    
+
+           # Timer prompts
+        "open calculator": "Opening calculator, sir.",
+        "open youtube": "Opening YouTube, sir.",
+        "open notepad": "Opening Notepad, sir.",
+        "set timer": "Sure sir, please tell me the duration for the timer.",
+        "start timer": "Timer ready sir. Please specify how many seconds or minutes.",
+        "time": "Sir, please clarify if you want to check the current time or set a timer.",
+        "how are you": "I'm functioning at full efficiency, sir.",
+        "thank you": "You're always welcome, sir.",
+        "time": "I'm not synced with the world clock yet, but I never sleep.",
+        "who made you": "I was created by Jatin Sharma, my genius developer.",
+        "open": "Sir, I can't open applications yet, but integration is in progress.",
+        "weather": "Currently, I cannot fetch live weather, but it's on my to-do list.",
+        "good morning": "Good morning sir, I hope you have a wonderful day ahead.",
+        "good afternoon": "Good afternoon sir, how is your day going?",
+        "good evening": "Good evening sir, I am ready to assist you.",
+        "good night": "Good night sir, sweet dreams.",
+
+        # Greetings / Conversation
+        "how's the weather today": "Sir, please tell me the city name so I can check the weather.",
+        "how's your day": "I don't have days like humans, sir, but I'm always happy to help.",
+        "long time no see": "Indeed sir, I missed our conversations.",
+        "nice to meet you": "Nice to meet you too, sir.",
+
+        # Knowledge / Facts
+        "who is elon musk and networth": "Sir, Elon Musk is the CEO of Tesla and SpaceX.",
+        "who is the prime minister of india": "Sir, as of 2024, Narendra Modi is the Prime Minister of India.",
+        "capital of india": "Sir, the capital of India is New Delhi.",
+        "capital of usa": "Sir, the capital of the United States is Washington, D.C.",
+        "how many continents": "Sir, there are 7 continents on Earth.",
+          # ✅ Time & Date
+        "what time is it": "Let me check the current time for you, sir.",
+        "what's the date": "I'll tell you the current date, sir.",
+        "show me time": "Here's the time, sir.",
+        "current time": "Checking the current system time, sir.",
+        "date and time": "Let me show you real-time information, sir.",
+         # ✅ Weather & News
+        "weather": "Checking the weather report, sir.",
+        "what's the weather": "Let me fetch the latest weather update.",
+        "latest news": "Here’s what’s happening in the world right now, sir.",
+        "show news": "Let me bring you today’s top headlines.",
+
+        # ✅ System Status / Information
+        "system status": "Checking all systems, sir.",
+        "check system": "Running a full diagnostic, please wait.",
+        "battery status": "Checking the battery level now.",
+        "status report": "Compiling the current system status.",
+        
+        # ✅ Tasks & Todo
+        "add task": "What task should I add to your list, sir?",
+        "show to-do": "Here’s your current to-do list, sir.",
+        "to-do list dikhao": "Let me show you your saved tasks.",
+
+        # ✅ Timer / Clock
+        "set timer": "Sure sir, please tell me the duration for the timer.",
+        "start timer": "Timer ready sir. Please specify how many seconds or minutes.",
+        "timer": "Would you like me to set or cancel a timer?",
+
+            # ✅ Search / Web
+        "search on google": "Searching that on Google, sir.",
+        "google search who is elon musk": "Googling it now, sir.",
+        "search wikipedia ": "Searching Wikipedia for you, sir.",
+        "youtube search": "Searching on YouTube, sir.",
+        "play video": "Playing requested video on YouTube.",
+        "play song": "Playing your favorite song, sir.",
+
+            # ✅ System Operations
+        "lock pc": "Locking the PC now, sir.",
+        "restart": "Restarting the system now, sir.",
+        "mute": "Muting system volume.",
+        "unmute": "Unmuting system volume.",
+        "volume up": "Increasing volume, sir.",
+        "volume down": "Decreasing volume, sir.",
+        
+        # Motivation & Inspiration
+        "motivate me": "Sir, remember — even the tallest building started with one brick.",
+        "give me a quote": "Sir, 'The future belongs to those who prepare for it today.'",
+        "quote of the day": "Sir, 'Do what you can, with what you have, where you are.'",
+        "boost my mood": "Sir, you are capable of more than you imagine. Keep going.",
+        "encourage me": "Sir, every step you take is progress, no matter how small.",
+
+        # Fun & Entertainment
+        "tell me a joke": "Sir, why did the computer go to the doctor? Because it caught a virus.",
+        "tell me something funny": "Sir, I told my computer I needed a break, and now it won’t stop sending me Kit-Kats.",
+        "tell me a riddle": "Sir, what has hands but can’t clap? A clock.",
+        "make me laugh": "Sir, my humor is 100% AI generated and 50% funny.",
+        "sing a song": "I can’t sing, sir, but I can recite lyrics if you want.",
+        "dance": "Sir, I can't dance physically, but I can groove in my circuits.",
+        "story": "Once upon a time, sir, there was an AI who loved helping its master — and that story never ends.",
+
+        # Knowledge & General
+        "tell me a fact": "Sir, honey never spoils. Archaeologists have found 3000-year-old honey still edible.",
+        "give me information": "Sure sir, what topic would you like me to talk about?",
+        "explain ai": "Sir, Artificial Intelligence is the simulation of human intelligence in machines.",
+        "define success": "Sir, success is achieving your desired goals with dedication and hard work.",
+        "meaning of life": "Sir, the meaning of life is what you make of it — purpose comes from you.",
+        "largest ocean": "Sir, the Pacific Ocean is the largest ocean on Earth.",
+
+        # Motivation / Fun
+        "quote of the day": "Sir, 'Success is not final, failure is not fatal: It is the courage to continue that counts.'",
+        "motivate me for study": "Sir, remember — every hour you spend studying is an investment in your future.",
+        "motivate me for work": "Sir, great achievements are built on small, consistent efforts.",
+        "tell me something funny": "Sir, why don’t programmers like nature? It has too many bugs.",
+
+        # Utility
+        "open calculator": "Opening calculator, sir.",
+        "open notepad": "Opening Notepad, sir.",
+        "check battery": "Checking battery status, sir.",
+        "lock pc": "Locking the computer, sir.",
+        "open settings": "Opening system settings, sir.",
+
+        # Entertainment
+        "play song": "Playing your favorite song, sir.",
+        "play video": "Playing video for you, sir.",
+        "tell me a riddle": "Sir, what has keys but can’t open locks? A piano.",
+
+        # Farewell / Polite
+        "goodbye": "Goodbye sir, see you soon.",
+        "take care": "You too sir, take care.",
+        "see you tomorrow": "Sure sir, I will be here tomorrow.",
+        "see you later" : "See you soon, sir.",
+        "good night": "Good night sir, sweet dreams.",
+        "bye": "Goodbye sir, I will be here whenever you need me.",
+        "what can you do": "I can answer questions, tell jokes, search the web, give facts, and more.",
+        "help": "Sir, you can ask me about weather, time, facts, definitions, or tasks.",
+        "motivate me": "Believe in yourself, sir. Every step brings you closer to success.",
+        "tell me a fact": "Did you know? The moon has moonquakes.",
+        "what can you do": "I can tell you the weather, news, jokes, search on Google, play YouTube videos, manage your tasks, and much more.",
+        "tell me a joke": "I have a lot of jokes. You can say 'tell me a joke' to hear one.",
+        "your age": "I am timeless, sir, but my knowledge is always up-to-date.",
+        "your favorite color": "I like blue, it reminds me of the digital sky.",
+        "sing a song": "I can't sing like humans, sir, but I can play your favorite music.",
+        "who am i": "You are my boss, Jatin sir, and I am always here to assist you.",
+        "motivate me": "Believe in yourself, sir. Every great journey starts with a single step.",
+        "are you real": "I am as real as the code that runs me, sir.",
+        "tell me a fact": "Did you know? The world's first computer programmer was Ada Lovelace in the 1800s.",
+        "shutdown": "Okay sir, I will power down. Goodbye."
+    }
+
+def get_predefined_response(query):
+    query = query.lower()
+    for key, value in predefined_responses.items():
+        if isinstance(key, tuple):  # if key is a tuple, check each item
+            if any(k in query for k in key):
+                return value
+        elif key in query:  # if key is string
+            return value
+    return None
+
+
+
+
+def ai_chat_response(user_prompt: str) -> str:
+    """AI Chat Function with predefined + Groq LLM fallback"""
+  #try:
+      # Check for predefined reply
+    predefined = get_predefined_response(user_prompt)  
+    if predefined:
+            return predefined
+    else:
+            # Call Groq API
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {"role": "user", "content": user_prompt},
+                {"role": "system", "content": system_prompt}
+            ],
+            model=model,
+            stream=False,
+        )
+        if chat_completion.choices and chat_completion.choices[0].message.content:
+            response = chat_completion.choices[0].message.content.strip()
+        else:
+            response = "Sorry sir, I could not generate a response."
+
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+        chat_data.append(f"[{timestamp}] You: {user_prompt}\nJarvis: {response}")
+        # Save to file (append mode)
+        with open(chat_history_file, "a", encoding="utf-8") as f:
+            f.write(f"[{timestamp}] You: {user_prompt}\nJarvis: {response}\n\n")
+
+        return response
+
+  #except Exception as e:
+   #     return f"❌ An error occurred: {e}"
+
+
+# ------------------------ Wikipedia ------------------------
+
+import wikipedia
+
+def wikipedia_search(command):
+    try:
+        summary = wikipedia.summary(command, sentences=2)
+        #print(summary)
+        speak(summary)
+      
+    except wikipedia.exceptions.DisambiguationError as e:
+        speak("The topic is ambiguous, please be more specific.")
+        print(f"DisambiguationError: {e.options}")
+    except wikipedia.exceptions.PageError:
+        speak("Sorry, I couldn't find any results for that topic.")
+    except Exception as e:
+        speak("Something went wrong while searching Wikipedia.")
+        print(f"Error: {e}")
+    
+# ------------------------ Weather ------------------------
+def get_weather(city, api_key):
+    try:
+        city = input("Enter your city : ")
+        url = f"https://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
+        res = requests.get(url)
+
+        if res.status_code == 200:
+            data = res.json()
+            location = data["location"]["name"]
+            country = data["location"]["country"]
+            region = data["location"]["region"]
+            localtime = data["location"]["localtime"]
+            temp_c = data["current"]["temp_c"]
+            humidity = data["current"]["humidity"]
+            wind_kph = data["current"]["wind_kph"]
+
+            print("\n🌦️ Weather Report:")
+            print(f"📍 Location: {location}, {region}, {country}")
+            print(f"🕰️ Local Time: {localtime}")
+            print(f"🌡️ Temperature: {temp_c}°C")
+            print(f"💧 Humidity: {humidity}%")
+            print(f"🌬️ Wind Speed: {wind_kph} kph")
+
+            # Optional: If using TTS
+            report = f"Here is the weather report for {location}. The temperature is {temp_c} degrees Celsius with {humidity} percent humidity. Wind speed is {wind_kph} kilometers per hour."
+            print(report)
+            speak(report)
+
+        else:
+            print("❌ Failed to fetch weather data. Please check the city name or API key.")
+            speak("Sorry, I couldn't fetch the weather data.")
+
+    except Exception as e:
+        print("⚠️ Error:", e)
+        speak("Something went wrong while checking the weather.")
+
+
+# ------------------------Google Search ------------------------
+def google_search(query):
+    """Search the given query on Google using the default web browser."""
+    if query:
+        url = f"https://www.google.com/search?q={query}"
+        print(f"🔍 Searching Google for: {query}")
+        webbrowser.open(url)
+    else:
+        print("❌ Empty query received.")
+
+
+# ------------------------ Calculator ------------------------
+def  calculate_expression(expression):
+    try:
+        result = eval(expression)
+        print(f"🧮 Result: {result}")
+        return result
+    except Exception as e:
+        print(f"❌ Calculation Error: {e}")
+        return None
+
+import requests
+
+
+# ------------------------ News ------------------------
+def get_latest_news(api_key, country="in", language="en"):
+    if not api_key:
+        speak("❌ No API key provided for news service.")
+        return []
+
+    url = f"https://newsapi.org/v2/top-headlines?country={country}&language={language}&apiKey={api_key}"
+
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+
+        if data.get("status") == "ok" and data.get("totalResults", 0) > 0:
+            articles = data.get("articles", [])[:5]  # return first 5 full articles
+            speak(f"Sir, I found {len(articles)} latest headlines.")
+            return articles
+        else:
+            msg = "❌ No news available at the moment."
+            print(msg)
+            speak(msg)
+            return []
+
+    except requests.Timeout:
+        error_msg = "⚠️ News service timed out."
+        print(error_msg)
+        speak(error_msg)
+        return []
+
+    except Exception as e:
+        error_msg = f"⚠️ Error fetching news: {e}"
+        print(error_msg)
+        speak("Sorry Sir, I couldn't fetch the news.")
+        return []
+
+
+
+
+def system_control(command: str) -> bool:
+    """
+    Perform basic system-level volume controls.
+    Works for Windows, macOS (Darwin), and Linux.
+    Supported commands: mute, unmute, volume up, volume down
+    """
+    try:
+        if not command:
+            return False
+
+        command = command.strip().lower()
+        system_name = platform.system()
+
+        # 🎯 Windows
+        if system_name == "Windows":
+            actions = {
+                "mute": lambda: keyboard.press_and_release("volume mute"),
+                "unmute": lambda: keyboard.press_and_release("volume mute"),  # toggle
+                "volume up": lambda: keyboard.press_and_release("volume up"),
+                "volume down": lambda: keyboard.press_and_release("volume down"),
+            }
+
+        # 🎯 macOS (Darwin)
+        elif system_name == "Darwin":
+            actions = {
+                "mute": lambda: os.system("osascript -e 'set volume output muted true'"),
+                "unmute": lambda: os.system("osascript -e 'set volume output muted false'"),
+                "volume up": lambda: os.system("osascript -e 'set volume output volume ((output volume of (get volume settings)) + 10)'"),
+                "volume down": lambda: os.system("osascript -e 'set volume output volume ((output volume of (get volume settings)) - 10)'"),
+            }
+
+        # 🎯 Linux
+        else:  
+            actions = {
+                "mute": lambda: os.system("amixer -D pulse sset Master mute || pactl set-sink-mute @DEFAULT_SINK@ 1"),
+                "unmute": lambda: os.system("amixer -D pulse sset Master unmute || pactl set-sink-mute @DEFAULT_SINK@ 0"),
+                "volume up": lambda: os.system("amixer -D pulse sset Master 5%+ || pactl set-sink-volume @DEFAULT_SINK@ +5%"),
+                "volume down": lambda: os.system("amixer -D pulse sset Master 5%- || pactl set-sink-volume @DEFAULT_SINK@ -5%"),
+            }
+
+        # 🔊 Execute command
+        if command in actions:
+            print(f"🔊 Performing system command: {command}")
+            actions[command]()
+            return True
+        else:
+            print(f"⚠️ Unknown system command: {command}")
+            return False
+
+    except Exception as e:
+        logging.error(f"system_control error: {e}")
+        return False
+
+
+# ------------------------ System Check ------------------------
+
+def GetSystemStatus():
+    battery = psutil.sensors_battery()
+    percent = battery.percent if battery else "N/A"
+    plugged = battery.power_plugged if battery else "N/A"
+    cpu = psutil.cpu_percent()
+    memory = psutil.virtual_memory().percent
+    return f"""### 🖥️ System Status:
+🔋 Battery: {percent}% {'(Charging)' if plugged else '(Not Charging)'}
+🧠 CPU Usage: {cpu}%
+💾 RAM Usage: {memory}%
+⏰ Time: {datetime.datetime.now().strftime('%H:%M:%S')}###"""
+
+def BatteryMonitor(interval=60):
+    while True:
+        battery = psutil.sensors_battery()
+        if battery:
+            percent = battery.percent
+            plugged = battery.power_plugged
+            if percent <= 10 and not plugged:
+                sound_path = "Assets/Sounds/battery_low.mp3"
+                if os.path.exists(sound_path):
+                    playsound.playsound(sound_path)
+                print("⚠️ Emergency: Battery level is critically low! Please plug in the charger.")
+        time.sleep(interval)
+
+# ------------------------ Detect Emotion ------------------------
+import cohere
+
+# Initialize with your Cohere API key
+co = cohere.Client("hhbsKHF8ApzQHJkQ5gdi2OSn9Bv93xTS7AkAnIee")  # 🔑 Replace with your actual key
+
+def detect_emotion(prompt: str) -> str:
+    """
+    Detects the emotional tone of the prompt using Cohere's classify endpoint.
+    Returns 'positive', 'negative', or 'neutral'.
+    """
+    try:
+        response = co.classify(
+            model="embed-english-v3.0",
+            inputs=[prompt],
+            examples=[
+                {"text": "I'm so happy today!", "label": "positive"},
+                {"text": "This is awesome!", "label": "positive"},
+                {"text": "I'm feeling sad.", "label": "negative"},
+                {"text": "I failed my exam.", "label": "negative"},
+                {"text": "What's the time?", "label": "neutral"},
+                {"text": "Tell me about python.", "label": "neutral"},
+                ]
+        )
+        return response.classifications[0].prediction
+    except Exception as e:
+        print(f"Emotion detection failed: {e}")
+        return "neutral"
+    
+
+# ------------------------ Google Search ------------------------
+def GoogleSearch(query):
+    try:
+        # Step 1: Perform Google search (only URLs, titles not supported in googlesearch)
+        results = list(search(query, num=5, stop=5, pause=2))
+        
+        # Step 2: Format result
+        Answer = f"🔎 Search results for: {query}\n\n[start]\n"
+        for i, link in enumerate(results, start=1):
+            Answer += f"{i}. {link}\n"
+        Answer += "[end]"
+
+        # Step 3: Clean Answer
+        CleanedAnswer = AnswerModifier(Answer)
+
+        # Step 4: Speak and Print
+        speak("Here are the top search results for your query.")
+        print(CleanedAnswer)
+
+        return CleanedAnswer
+
+    except Exception as e:
+        error_msg = f"❌ Google Search Error: {e}"
+        print(error_msg)
+        speak("Sorry, I couldn't perform the Google search.")
+        return error_msg
+
+
+def AnswerModifier(Answer):
+    lines = Answer.split('\n')
+    non_empty_lines = [line.strip() for line in lines if line.strip()]
+    return '\n'.join(non_empty_lines)
+
+
+# ------------------------ DateTime ------------------------
+import datetime
+
+def RealTimeInformation(speak=False):
+    current_date_time = datetime.datetime.now()
+
+    day = current_date_time.strftime("%A")
+    date = current_date_time.strftime("%d")
+    month = current_date_time.strftime("%B")
+    year = current_date_time.strftime("%Y")
+    hour = current_date_time.strftime("%H")
+    minute = current_date_time.strftime("%M")
+    second = current_date_time.strftime("%S")
+
+    data = (
+        f"📅 Real-Time Information:\n"
+        f"Day    : {day}\n"
+        f"Date   : {date}\n"
+        f"Month  : {month}\n"
+        f"Year   : {year}\n"
+        f"Time   : {hour}:{minute}:{second}"
+    )
+
+    print("🕒", data)
+
+    if speak:
+        try:
+            speak(data.replace("\n", ". "))  # Speak without newlines
+        except:
+            print("TTS failed or not defined.")
+    
+    return data
+
+
+def jarvis_intro():
+    WishMe()
+    speak(f"Hello! I am {Assistantname}, your AI assistant.")
+    speak("Created by Jatin Sharma — built with voice, logic, and deep learning.")
+    speak("I'm here to make your digital life smarter and smoother.")
+    speak("From weather to WhatsApp, from jokes to reminders — just say it, and I’ll handle it.")
+    speak("Let’s begin — your smart journey starts now.")
+
+
+# ------------------------ Todo List ------------------------
+def manage_todo_list(jarvis_speak, jarvis_listen):
+    """
+    Manage To-Do tasks via voice or text in Jarvis.
+    """
+    todo = []
+
+    jarvis_speak("📋 Let's start your To-Do List. Say 'done' when you're finished.")
+
+    while True:
+        task = jarvis_listen()
+
+        if not task:  # Handles None or empty string
+            continue
+
+        task = task.strip().lower()
+
+        if task == 'done':
+            break
+
+        todo.append(task)
+        jarvis_speak(f"✅ Task added: {task}")
+
+    if not todo:
+        jarvis_speak("⚠️ You didn't add any tasks.")
+        return
+
+    jarvis_speak("📝 Here’s your To-Do List:")
+    for i, task in enumerate(todo, 1):
+        jarvis_speak(f"{i}. {task}")
+
+# ------------------------ Youtube Search ------------------------
+def YoutubeSearch(topic):
+    """
+    Opens YouTube search results for the given topic.
+    """
+    try:
+        speak(f"Searching YouTube for {topic}")
+        url_for_search = f"https://www.youtube.com/results?search_query={topic}"
+        webbrowser.open(url_for_search)
+        return True
+    except Exception as e:
+        speak("Sorry, I couldn't perform the YouTube search.")
+        print(f"Error: {e}")
+        return False
+
+
+# ------------------------ Play Youtube ------------------------
+def PlayYoutube(query):
+    """
+    Plays the first YouTube video matching the search query.
+    """
+    try:
+        speak(f"Playing {query} on YouTube")
+        playonyt(query)
+        return True
+    except Exception as e:
+        speak("Sorry, I couldn't play the video.")
+        print(f"Error: {e}")
+        return False
+
+
+# ------------------------ Set Timer ------------------------
+def setTimer():
+    try:
+        speak("For how many seconds should I set the timer?")
+        duration_str = speechtotext()  # mic से user input लो
+        digits = ''.join(filter(str.isdigit, duration_str))
+        if not digits:
+          speak("Timer duration not recognized.")
+          return
+        duration = int(digits)
+
+        
+        if duration_str is None or duration_str.lower() == "none":
+
+            speak("Timer duration not recognized.")
+            return
+
+        duration = int(''.join(filter(str.isdigit, duration_str)))
+        if duration <= 0:
+            speak("Invalid time duration.")
+            return
+
+        speak(f"Timer set for {duration} seconds. Starting now.")
+
+        while duration:
+            if duration == 60:
+                speak("1 minute left.")
+            elif duration == 10:
+                speak("10 seconds remaining.")
+            elif duration <= 5:
+                speak(str(duration))
+            time.sleep(1)
+            duration -= 1
+
+        speak("Time's up! Wake up!")
+    except Exception as e:
+        print(e)
+        speak("Sorry, I couldn't set the timer.")
+
+# ========== Notification ==========
+def show_notification(title, message):
+    try:
+        notification.notify(title=title, message=message, timeout=5)
+    except Exception as e:
+        print("⚠️ Notification failed:", e)
+
+# ========== Reminder Manager ==========
+class ReminderManager:
+    def __init__(self):
+        self.reminders = {}
+
+    def add_reminder(self, command):
+        time_str, message = self.extract_time_and_message(command)
+        if not time_str or not message:
+            return "⚠️ Could not understand reminder time or message."
+
+        self.reminders[time_str] = message
+        schedule.every().day.at(time_str).do(self._trigger_reminder, message)
+        speak(f"⏰ Reminder set for {time_str}: {message}")
+        return f"✅ Reminder added: {message} at {time_str}"
+
+    def extract_time_and_message(self, text):
+        # Detect time in format like 5:30, 17:30, 5:30 PM, etc.
+        match = re.search(r'(\d{1,2}):(\d{2})\s*(am|pm|AM|PM)?', text)
+        if not match:
+            return None, None
+
+        hour, minute, meridian = match.groups()
+        hour, minute = int(hour), int(minute)
+
+        if meridian:
+            if meridian.lower() == "pm" and hour != 12:
+                hour += 12
+            elif meridian.lower() == "am" and hour == 12:
+                hour = 0
+
+        time_str = f"{hour:02d}:{minute:02d}"
+
+        # Remove time part from message
+        message = re.sub(r'(\d{1,2}):(\d{2})\s*(am|pm|AM|PM)?', '', text, flags=re.IGNORECASE).strip()
+        message = message.replace("remind me to", "").replace("remind me", "").strip()
+
+        return time_str, message
+
+    def _trigger_reminder(self, message):
+        print(f"🔔 Reminder Alert: {message}")
+        show_notification("🔔 Reminder", message)
+        speak(f"Reminder: {message}")
+
+    def run_scheduler(self):
+        def loop():
+            while True:
+                schedule.run_pending()
+                time.sleep(1)
+        Thread(target=loop, daemon=True).start()
+    
+      # ------------------------ Voice to Text Writer ------------------------
+def write_note():
+    try:
+        speak("Sir, please tell me what you want to write.")
+        note_text = speechtotext()
+        if note_text and note_text != "none":
+            with open("written_notes.txt", "a", encoding="utf-8") as f:
+                f.write(note_text + "\n")
+            speak("Your note has been written successfully.")
+            print(f"📝 Written: {note_text}")
+        else:
+            speak("Sorry sir, I didn't catch what you said.")
+    except Exception as e:
+        logging.error(f"write_note error: {e}")
+        speak("Sorry, I could not write your note.")
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
+from io import BytesIO
+
+
+
+api_key = HUGGINGFACE_API_KEY 
+if not api_key:
+    print("⚠️ HUGGINGFACE_API_KEY missing in .env")
+    # yaha aapka open ai fetch code aayega
+
+# ---------------------- Image Preview ----------------------
+def show_image_preview(file_path):
+    """
+    Show the generated image in a Tkinter preview window with Save/Close options.
+    """
+    try:
+        root = tk.Tk()
+        root.title("Jarvis Image Preview")
+
+        img = Image.open(file_path)
+        img = img.resize((400, 400))
+        tk_img = ImageTk.PhotoImage(img)
+
+        label = tk.Label(root, image=tk_img)
+        label.pack(padx=10, pady=10)
+
+        # Button Frame
+        btn_frame = tk.Frame(root)
+        btn_frame.pack(pady=10)
+
+        def save_image():
+            messagebox.showinfo("Jarvis", f"✅ Image saved successfully: {file_path}")
+            root.destroy()
+
+        def close_window():
+            if os.path.exists(file_path):
+                os.remove(file_path)  # delete file if user doesn't want to save
+            messagebox.showinfo("Jarvis", "❌ Image discarded.")
+            root.destroy()
+
+        save_btn = tk.Button(btn_frame, text="💾 Save", command=save_image, width=10, bg="green", fg="white")
+        save_btn.grid(row=0, column=0, padx=10)
+
+        close_btn = tk.Button(btn_frame, text="❌ Close", command=close_window, width=10, bg="red", fg="white")
+        close_btn.grid(row=0, column=1, padx=10)
+
+        root.mainloop()
+
+    except Exception as e:
+        print("⚠️ Image Preview Error:", e)
+
+
+# ---------------------- HuggingFace Image Generator ----------------------
+def generate_image_huggingface(prompt: str, style: str = "realistic", size: str = "512x512"):
+    """
+    Generate an image with Hugging Face Stable Diffusion model and preview it in a Tkinter window.
+    """
+    try:
+        speak(f"Generating image for: {prompt}")
+        # Merge prompt with style
+        if style and style.lower() != "none":
+            prompt = f"{prompt}, {style} style"
+
+        # API URL
+        API_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
+        headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
+
+        print(f"🎨 Generating image: {prompt}")
+
+        # Request HuggingFace
+        response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
+        if response.status_code != 200:
+            print("❌ API Error:", response.text)
+            return None
+
+        # Save Image
+        image = Image.open(BytesIO(response.content))
+        file_name = f"generated_{int(time.time())}.png"
+        image.save(file_name)
+
+        print("✅ Image generated successfully. Opening preview window.")
+        show_image_preview(file_name)
+
+        return file_name
+
+    except Exception as e:
+        error_msg = f"⚠️ Image generation failed: {e}"
+        print(error_msg)
+        return None
+
+
+
+# ------------------------ Jarvis Control ------------------------
+def DeviceControl(command):
+    try :    
+         # 🔋 Start battery monitoring in background thread
+        battery_thread = threading.Thread(target=BatteryMonitor, daemon=True)
+        battery_thread.start()
+        command = command.lower()
+        if any(phrase in command for phrase in ["hello", "hi", "hey jarvis", "jarvis hello"]):
+            speak(f"Hello {Username}, how can I help you?")
+        
+        elif "open" in command:
+            app_name = command.replace("open", "").strip()
+
+            # पहले PC Apps चेक करो
+            if app_name in pc_apps:
+                open_pc_app(app_name)
+
+            elif app_name in web_apps:
+                open_web_app(app_name)
+
+            else:
+                speak(f"Sorry, I couldn't find {app_name} in my apps list.")
+
+
+        elif any(phrase in command for phrase in ["open youtube", "launch youtube", "start youtube", "youtube chalao"]):
+            speak("Opening YouTube")
+            webbrowser.open("https://youtube.com")
+        
+        elif any(x in command for x in ["generate image", "create image", "draw image", "tasveer banao", "chitra banao"]):
+            prompt = command.replace("generate image", "").replace("create image", "").replace("draw image", "").replace("tasveer banao", "").replace("chitra banao", "").strip()
+    
+            if not prompt:
+                speak("Sir, please tell me what image I should create.")
+                prompt = speechtotext()
+
+            if prompt:
+                try:
+                    speak("Please wait sir, generating your image...")
+                    image_path = generate_image_huggingface(prompt)   # HuggingFace se image banane ka function
+                    if image_path:
+                        speak("Here is your generated image.")
+                        show_image_preview(image_path)  # apke system me preview ke liye function
+                    else:
+                        speak("Sorry sir, image could not be generated.")
+                except Exception as e:
+                    print("❌ Error:", e)
+                    speak("Something went wrong while generating the image.")
+
+
+        elif any(phrase in command for phrase in ["time", "what time is it", "show me time", "abhi kitne baje hain", "time batao"]):
+            speak("Showing you the clock n ow.")
+            current_time()
+        
+
+        elif any(x in command for x in ["write this", "note likho", "likho", "write note", "note banao"]):
+            write_note()
+
+
+        elif "wikipedia" in command or any(phrase in command for phrase in ["search wikipedia", "wikipedia pe dekho", "wikipedia par jankari do"]):
+            topic = command.replace("wikipedia", "").replace("search", "").replace("pe dekho", "").replace("par jankari do", "").strip()
+            wikipedia_search(topic)
+
+        elif any(x in command for x in ["calculate", "solve", "math", "hisab"]):
+            expression = command.replace("calculate", "").replace("solve", "").replace("math", "").replace("hisab", "").strip()
+            calculate_expression(expression)
+
+        elif any(x in command for x in [
+    "news", "khabar", "show news", "latest news", "aaj ki khabar", "today news",
+    "read news", "samachar", "breaking news", "headline", "headlines"
+       ]):
+           speak("Getting the latest headlines...")
+
+    # 👉 User se input le lo
+           speak("Sir, please tell me the country code. For example: 'in' for India, 'us' for USA.")
+           country = speechtotext()
+           if not country or country == "none":
+               country = "in"  # default India
+
+           api_key = NEWS_API_KEY
+           if not api_key:
+                   print("⚠️ NEWS_API_KEY missing in .env")
+                   return
+               # yaha aapka news fetch code aayega
+           headlines = get_latest_news(api_key, country=country, language="en")
+
+           if not headlines:
+                speak("Sorry sir, I could not fetch the news at the moment.")
+           else:
+              for i, article in enumerate(headlines, 1):
+                try:
+                    # Extract info
+                    title = article.get("title", "No Title")
+                    source = article.get("source", {}).get("name", "Unknown Source")
+                    news_type = article.get("description", "General News")
+
+                # Print + Speak
+                    print(f"🗞️ {i}. {title}  ({source})")
+                    speak(f"Headline {i}: {title}. Source: {source}.")
+                except Exception as e:
+                    print("⚠️ Error displaying news:", e)
+
+
+        elif any(p in command for p in [
+    "system status", "check system", "pc status", "laptop status", "device status",
+    "status report", "system report", "hardware report", "computer status"
+        ]):
+            status = GetSystemStatus()
+            print(status)
+            speak(status.replace("###", ""))
+
+        # 😊 Emotion Detection Commands
+        elif any(phrase in command for phrase in [
+            "how am i", "what do you think of my mood", "am i okay", "how do i feel",
+            "mera mood kaisa hai", "mood check", "mood status", "meri feeling kaisi hai",
+            "how's my mood", "mood batao"
+        ]):
+            emotion = detect_emotion(command)
+            if emotion == "negative":
+                speak("I'm here for you. Do you want to hear something motivating?")
+            elif emotion == "positive":
+                speak("That's great to hear! Keep it up!")
+            else:
+                speak("Got it. How can I help you today?")
+
+        elif any(p in command for p in [
+    "open google", "google kholo",  "google search",
+    "launch google", "open chrome google", "go to google", "google pe jao"
+        ]):
+            speak("Opening Google")
+            #print("Opening Google")
+            webbrowser.open("https://google.com")
+
+        elif any(p in command for p in [
+    "tell me a joke", "jokes", "funny joke", "make me laugh", "joke sunao",
+    "mujhe joke sunao", "joke batao", "sunao joke", "funny", "hansi",
+    "koi joke", "joke suna do", "crack a joke", "entertain me", "joke please"
+     ]):
+    # यहाँ joke वाला function कॉल करो
+            asyncio.run(print_joke())
+
+    
+
+
+        elif any(x in command for x in ["play music", "music chalao", "start song", "song"]):
+            music_path = "C:\\Users\\shiv\\Documents\\Music"
+            play_music(music_path)
+
+        elif any(x in command for x in ["search on google", "google search", "google pe dhoondo", "internet pe dhoondo"]):
+            query = command
+            for phrase in ["search on google", "google search", "google pe dhoondo", "internet pe dhoondo"]:
+                query = query.replace(phrase, "")
+            query = query.strip()
+            google_search(query)
+
+        elif any(x in command for x in ["weather", "musam", "mausam", "mosam", "weather report", "today's weather"]):
+            speak("Please tell me the city name.")
+            city = speechtotext()
+            api_key = WEATHER_API_KEY
+            if not api_key:
+                print("⚠️ WEATHER_API_KEY missing in .env")
+                return
+            # yaha aapka weather fetch code aayega
+            get_weather(city, WEATHER_API_KEY)
+
+        if any(x in command for x in ["mute", "unmute", "volume up", "volume down"]):
+            system_control(command)
+
+        elif any(p in command for p in ["date", "time", "what is the time", "tell date", "real time", "date and time", "kya samay hua", "kitni baje", "day", "today ka time", "aaj ka samay"]):
+            info = RealTimeInformation(speak=True)
+            print("🧠 Jarvis Real-Time Info:\n", info)
+        
+        # Global todo list
+        todo = []
+
+        # Add Task
+        if any(phrase in command for phrase in ["add task", "new task", "add to do", "to do add karo"]):
+            speak("What task should I add?")
+            task = speechtotext()
+            if task and task != "none":
+                todo.append(task)
+                speak(f"Task '{task}' added to your to-do list.")
+
+                # Save to file
+                try:
+                    with open("todo_list.txt", "a") as f:
+                        f.write(task + "\n")
+                except Exception as e:
+                    speak("Sorry, I couldn't save the task.")
+                    print("Error saving task:", e)
+            else:
+                speak("No task was heard.")
+
+        # Show To-do
+        elif any(phrase in command for phrase in ["show to-do", "show tasks", "to-do list dikhao", "meri list dikhao"]):
+            # First read from file
+            try:
+                 with open("todo_list.txt", "r") as f:
+                    todo = [line.strip() for line in f.readlines()]
+            except FileNotFoundError:
+                todo = []
+
+            if not todo:
+                 speak("Your to-do list is empty.")
+        else:
+             #speak("Here is your to-do list:")
+             for i, task in enumerate(todo, 1):
+                 speak(f"Task {i}: {task}")
+
+        if "youtube search" in command or "search on youtube" in command:
+           topic = command.replace("youtube search", "").strip()
+           YoutubeSearch(topic)
+        
+
+        elif any(phrase in command.lower() for phrase in [
+    "remind", "set reminder", "add reminder", "yaad dila",
+    "mujhe yaad", "reminder lagao", "reminder set karo", "yaad dila dena"
+        ]):
+            reminder_text = command
+            for phrase in [
+        "remind", "set reminder", "add reminder", "yaad dila",
+        "mujhe yaad", "reminder lagao", "reminder set karo", "yaad dila dena"
+            ]:
+                reminder_text = reminder_text.replace(phrase, "").strip()
+
+            print(reminder.add_reminder(reminder_text))
+
+
+
+        elif "play video" in command or "play on youtube" in command:
+           topic = command.replace("play video", "").strip()
+           PlayYoutube(topic)
+
+        elif "set timer" in command or "start timer" in command:
+          setTimer()
+        
+        else:
+          print(f"[DeviceControl] No action for: {command}")
+        
+    except Exception as e:
+                    speak("Sorry, I couldn't save the task.")
+                    print("Error saving task:", e)       
+def jarvis_loop():
+    while True:
+        if not check_internet():
+            speak("Sir, no internet connection. Retrying in 10 seconds...")
+            time.sleep(10)
+            continue  # break नहीं होगा
+
+        command = speechtotext()
+        if not command or command == "none":
+            continue
+
+        elif command in ["exit", "jarvis shutdown", "stop", "band ho ja"]:
+            speak("Goodbye sir, see you soon.")
+            break
+
+        # Step 1: AI + Predefined Response
+        response = ai_chat_response(command)
+        speak(response)
+
+        # Step 2: Command Action
+        #DeviceControl(command)
+        DeviceControl(command)
+
+
+# ------------------------ Run Jarvis ------------------------
+if __name__ == "__main__":
+    # Greet the user
+    start_jarvis()
+    jarvis_intro()
+    time.sleep(1)
+    reminder = ReminderManager()
+    reminder.run_scheduler()
+    #Run Jarvis
+    jarvis_loop()
+
+
+   
+
+while True :    
+    # Start system monitoring in the background
+    battery_thread = threading.Thread(target=BatteryMonitor, daemon=True)
+    battery_thread.start()
+
+
