@@ -21,7 +21,6 @@ speech-to-text-jarvis/
 │
 ├── Speech to text.py     # Main script for assistant
 ├── requirements.txt      # Python dependencies
-├── .env                  # Optional API keys for advanced integration
 └── README.md             # Project documentation
 ```
 
