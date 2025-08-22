@@ -125,16 +125,8 @@ Contributions are welcome!
 This project is licensed under the [MIT License](LICENSE).
 
 ---
+### 🏷 **Badges**
 
-### 🏷 **Badges to Add**
-
-```markdown
-![Python]
-(https://img.shields.io/badge/Python-3.8+-blue)
-![License]
-(https://img.shields.io/badge/License-MIT-green)
+![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-```
----
-
-Would you like me to *generate a `requirements.txt`** for your current setup so it’s ready for GitHub?
